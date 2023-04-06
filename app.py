@@ -89,6 +89,7 @@ def postRoute():
     print("in route here")
     userEmail = request.form['email']
     image = request.files['image']
+    country = request.form['country']
     if image and allowed_file(image.filename):
         imageName = secure_filename(image.filename)
         # store the image in the uploads folder
@@ -102,7 +103,7 @@ def postRoute():
     print("there")
 
     # run the below code after the Response is sent to user
-  # @successResponse.call_on_close
+   # @successResponse.call_on_close
     def on_close():
         print("in on close")
         # If the user does not select a file, the browser submits an empty file without a filename.
@@ -123,7 +124,6 @@ def postRoute():
             vector1 = helper.process()
             print(len(vector1))
             # getting feature vector of the retrieved logos images and displaying matches
-            country = request.form['country']
 
             URL = "https://logos-web-scraper.onrender.com/WalidLogosApi?country=" + country
             headers = {
@@ -217,4 +217,4 @@ def get_stream(url):
 if __name__ == "__main__":
     from waitress import serve
     print("server is running at port "+str(os.getenv("PORT")))
-    serve(app, port=os.getenv("PORT"))
+    serve(app, host="0.0.0.0", port=os.getenv("PORT"))
