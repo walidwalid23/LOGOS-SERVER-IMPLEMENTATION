@@ -19,7 +19,7 @@ from flask_pymongo import PyMongo
 from dotenv import load_dotenv
 import os
 import threading
-
+import time
 global embed
 
 load_dotenv()
@@ -130,7 +130,7 @@ def postRoute():
                 'Content-Type': 'application/json'
             }
             # send a request to get stream of logo json objects
-
+            time.sleep(0.001)
             resp = requests.request(
                 "GET", URL, headers=headers, stream=True)
             # print(resp.headers['content-type'])
