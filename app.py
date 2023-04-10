@@ -105,6 +105,9 @@ def postRoute():
     # run the below code after the Response is sent to user
    # @successResponse.call_on_close
     def on_close():
+        # using session:if several requests are being made to the same host, the underlying TCP connection will be reused (keep-alive)
+        # so when the web scraping server finishes it will wait for us instead of closing the connection after its time out finishes
+        session = requests.Session()
         print("in on close")
         # If the user does not select a file, the browser submits an empty file without a filename.
         if image.filename == '':
@@ -127,12 +130,13 @@ def postRoute():
 
             URL = "https://logos-web-scraper.onrender.com/WalidLogosApi?country=" + country
             headers = {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Connection': 'keep-alive'
             }
             # send a request to get stream of logo json objects
             time.sleep(0.001)
-            resp = requests.request(
-                "GET", URL, headers=headers, stream=True)
+            resp = session.get(URL, headers=headers,
+                               stream=True)
             # print(resp.headers['content-type'])
             # print(resp.encoding)
             # we iterate by lines since we added new line after each response from server side
