@@ -106,7 +106,6 @@ def postRoute():
    # @successResponse.call_on_close
     def on_close():
         # using session:if several requests are being made to the same host, the underlying TCP connection will be reused (keep-alive)
-        # so when the web scraping server finishes it will wait for us instead of closing the connection after its time out finishes
         session = requests.Session()
         print("in on close")
         # If the user does not select a file, the browser submits an empty file without a filename.
@@ -149,6 +148,7 @@ def postRoute():
 
                     companyName = decodedLogoObj["companyName"]
                     logoImageUrl = decodedLogoObj["logoImageUrl"]
+                    lastLogoUrl = decodedLogoObj["lastLogo"]
                     # print(decodedLogoObj)
                     # check if the logo Image path is hidden or not by the website (if not it starts with http)
                     if logoImageUrl[0] != "h":
@@ -187,6 +187,12 @@ def postRoute():
                         # send the email to the user (you must put the mail.send inside the app context)
                         with app.app_context():
                             mail.send(msg)
+                    # close connection after the last logo (can't be closed after the for loop due to a bug)
+                    if (logoImageUrl == lastLogoUrl):
+                        print("this is the last logo")
+                        resp.close()
+                        break
+
             if resultsFound == False:
                 # Send an email telling the user that no results were found
                 msg = Message('No Results Found',
