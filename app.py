@@ -86,7 +86,7 @@ def cosineSim(a1, a2):
 
 @app.route('/sendLogo', methods=['POST'])
 def postRoute():
-    print("in route here")
+    print("in route")
     userEmail = request.form['email']
     image = request.files['image']
     country = request.form['country']
@@ -100,7 +100,6 @@ def postRoute():
     else:
         return jsonify(
             {"errorMessage": "Invalid File Type"})
-    print("there")
 
     # run the below code after the Response is sent to user
    # @successResponse.call_on_close
@@ -199,7 +198,7 @@ def postRoute():
                               sender='stylebustersinc@gmail.com',
                               recipients=[userEmail]
                               )
-                msg.body = 'No Matches Has Been Found'
+                msg.body = 'No Logo Matches Has Been Found'
                 # send the email to the user (you must put the mail.send inside the app context)
                 with app.app_context():
                     mail.send(msg)
