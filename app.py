@@ -44,12 +44,12 @@ app.config['MONGO_URI'] = "mongodb+srv://walidwalid:"+os.getenv(
 mongo_client = PyMongo(app)
 extractedFeaturesCollec = mongo_client.db.extracted_features_col
 # configuration of mail
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'stylebustersinc@gmail.com'
-app.config['MAIL_PASSWORD'] = 'temlvwashllnqpbh'
+app.config['MAIL_SERVER'] = 'smtp-relay.sendinblue.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USERNAME'] = 'walid.tawfik2000@hotmail.com'
+app.config['MAIL_PASSWORD'] = 'cNxhb5W6EpAIXDUj'
 app.config['MAIL_USE_TLS'] = False
-app.config['MAIL_USE_SSL'] = True
+app.config['MAIL_USE_SSL'] = False
 mail = Mail(app)
 # loading the feature extraction model
 saved_model_path = 'feature_extractor/PRE TRAINED MOBILE NET/'
