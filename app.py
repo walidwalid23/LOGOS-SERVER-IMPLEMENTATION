@@ -63,7 +63,7 @@ class TensorVector(object):
 
     def process(self):
         img = tf.io.read_file(self.FileName)
-        img = tf.io.decode_image(img, channels=3)
+        img = tf.io.decode_jpeg(img, channels=3)
         img = tf.image.resize_with_pad(img, 224, 224)
         img = tf.image.convert_image_dtype(img, tf.float32)[tf.newaxis, ...]
         features = embed(img)
