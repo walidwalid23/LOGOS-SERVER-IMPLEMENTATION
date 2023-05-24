@@ -59,7 +59,6 @@ class TensorVector(object):
         self.FileName = FileName
 
     def process(self):
-        time.sleep(0.2)
         img = tf.io.read_file(self.FileName)
         img = tf.io.decode_image(img, channels=3)
         img = tf.image.resize_with_pad(img, 224, 224)
@@ -127,8 +126,7 @@ def postRoute():
             URL = "https://logos-web-scraper.onrender.com/WalidLogosApi?country=" + country
             headers = {
                 'Content-Type': 'application/json',
-                'Connection': 'keep-alive',
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36'
+                'Connection': 'keep-alive'
             }
             # send a request to get stream of logo json objects
             time.sleep(0.001)
