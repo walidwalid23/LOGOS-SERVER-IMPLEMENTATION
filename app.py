@@ -147,7 +147,8 @@ def postRoute():
                     decodedLogoObj = json.loads(decoded_chunk)
 
                     companyName = decodedLogoObj["companyName"]
-                    logoImageUrl = decodedLogoObj["logoImageUrl"]
+                    logoImageUrl = decodedLogoObj["logoImageUrl"].replace(
+                        "https", "http")
                     lastLogoUrl = decodedLogoObj["lastLogo"]
                     # print(decodedLogoObj)
                     # check if the logo Image path is hidden or not by the website (if not it starts with http)
@@ -160,6 +161,7 @@ def postRoute():
                     if result == None:
                         # if the features weren't stored before
                         # extract features from each retrieved logo image
+                        time.sleep(0.5)
                         helper2 = TensorVector(logoImageUrl)
                         vector2 = helper2.process()
                         # store the features in the database
