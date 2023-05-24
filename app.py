@@ -161,7 +161,7 @@ def postRoute():
                     if result == None:
                         # if the features weren't stored before
                         # extract features from each retrieved logo image
-                        time.sleep(0.5)
+                        time.sleep(0.1)
                         helper2 = TensorVector(logoImageUrl)
                         vector2 = helper2.process()
                         # store the features in the database
