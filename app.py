@@ -1,8 +1,7 @@
 from flask import Flask, jsonify, request
 from werkzeug.utils import secure_filename
 import tensorflow as tf
-# import tensorflow_hub as hub
-from tensorflow import keras
+import tensorflow_hub as hub
 import numpy as np
 import os
 import pandas as pd
@@ -39,7 +38,11 @@ def allowed_file(filename):
 # preparing the server
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
+# THE DATABASE NAME MUST BE ADDED IN THE URI BEFORE THE ? OR THE DB OBJECT WILL BE NONE
+app.config['MONGO_URI'] = "mongodb+srv://walidwalid:"+os.getenv(
+    "DB_PASS")+"@cluster0.2k8t7ew.mongodb.net/Logos_Features_DB?retryWrites=true&w=majority"
+mongo_client = PyMongo(app)
+extractedFeaturesCollec = mongo_client.db.extracted_features_col
 # configuration of mail
 app.config['MAIL_SERVER'] = 'smtp-relay.sendinblue.com'
 app.config['MAIL_PORT'] = 587
@@ -50,7 +53,7 @@ app.config['MAIL_USE_SSL'] = False
 mail = Mail(app)
 # loading the feature extraction model
 saved_model_path = 'feature_extractor/PRE TRAINED MOBILE NET/'
-embed = keras.models.load_model(saved_model_path)
+embed = hub.KerasLayer(saved_model_path)
 # Class Responsible For CONVERTING IMAGES TO FEATURE VECTORS (EMBEDDINGS)
 
 
@@ -150,10 +153,21 @@ def postRoute():
                     if logoImageUrl[0] != "h":
                         # display default image
                         logoImageUrl = "uploads/hidden-logo.png"
-
-                    # extract features from each retrieved logo image
-                    helper2 = TensorVector(logoImageUrl)
-                    vector2 = helper2.process()
+                    # check if the features were already extracted and stored before or not
+                    result = extractedFeaturesCollec.find_one(
+                        {'logoImgPath': logoImageUrl})
+                    if result == None:
+                        # if the features weren't stored before
+                        # extract features from each retrieved logo image
+                        helper2 = TensorVector(logoImageUrl)
+                        vector2 = helper2.process()
+                        # store the features in the database
+                        # https://stackoverflow.com/questions/1614236/in-python-how-do-i-convert-all-of-the-items-in-a-list-to-floats
+                        extractedFeaturesCollec.insert_one({'logoImgPath': logoImageUrl,
+                                                            'features': [float(i) for i in vector2]})
+                    else:
+                        # convert the features array back to float32
+                        vector2 = np.array(result['features'], dtype="float32")
 
                     # get the cosine similarity
                     cosine_similarity = cosineSim(vector1, vector2)
